@@ -1,17 +1,21 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.logging.Logger;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
+
+    Logger log = Logger.getLogger("gui");
 
     JLabel l = new JLabel(this.toString());
     JButton pauseButton;
     JButton restartButton;
 
-    Timer timer = new Timer(200, this);
+    Timer timer = new Timer(Props.initialDelay, this);
     boolean paused = false;
 
     boolean caught = false;
@@ -120,11 +124,16 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         }
 
         if (e.getSource().equals(restartButton)) {
+            log.info("Restarting");
+            Props.changePropsSet1();
+            setBackground(Props.backgroundColor);
+            ((SnakeGame)SwingUtilities.getWindowAncestor(this)).resize();
             snake = new Snake();
             apple = new Apple(snake);
             caught = false;
             lost = false;
             points = 0;
+            timer.setDelay(Props.initialDelay);
             grabFocus();
             repaint();
         }
